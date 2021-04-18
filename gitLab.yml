@@ -1,0 +1,21 @@
+gitlab:
+    image: gitlab/gitlab-ce:13.10.0-ce.0
+    restart: always
+    container_name: kinth_gitLab
+    hostname: '192.168.1.11'
+    environment:
+        GITLAB_OMNIBUS_CONFIG: |
+            external_url 'https://192.168.1.11:8443'
+            nginx['redirect_http_to_https'] = true
+            letsencrypt['enable'] = false
+            nginx['ssl_certificate'] = "/etc/gitlab/nginx.pem"
+            nginx['ssl_certificate_key'] = "/etc/gitlab/nginx.key"
+            gitlab_rails['gitlab_shell_ssh_port'] = 2233
+            # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+        - "8443:8443"
+        - "2233:22"
+    volumes:
+        - ./data:/var/opt/gitlab
+        - ./logs:/var/log/gitlab
+        - ./config:/etc/gitlab
